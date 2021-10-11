@@ -16,6 +16,7 @@ public class Game {
     public static void runGame() {
         initQuestions();
         startOutput();
+        answering();
     }
 
     public static void startOutput() {
@@ -56,5 +57,88 @@ public class Game {
         questions.put(4, question4);
     }
 
+    public static void answering() {
+        for (int i = 1; i < 5; i++) {
+            Question question = questions.get(i);
+            System.out.println(question.getQuestionText());
+            printAnswers(question);
+            int answerValue = getUserAnswer();
+            if (!checkAnswer(question, answerValue, i)) {
+                return;
+            }
+        }
+    }
 
+    public static void printAnswers(Question question) {
+        for (Integer key : question.getAnswers().keySet()) {
+            System.out.println(key + " - " + question.getAnswers().get(key).getAnswerText());
+        }
+    }
+
+    public static int getUserAnswer() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите ваш вариант ответа: ");
+        int answerValue = 0;
+        while (answerValue < 1 || answerValue > 4) {
+            if (!scanner.hasNextInt()) {
+                System.out.print("Некорректный ввод (⊙_⊙)？\nПопробуйте снова: ");
+                scanner.next();
+            }
+            else {
+                answerValue = scanner.nextInt();
+                if (answerValue < 1 || answerValue > 4) {
+                    System.out.print("Некорректный ввод (⊙_⊙)？\nПопробуйте снова: ");
+                    answerValue = 0;
+                }
+            }
+        }
+        return answerValue;
+    }
+
+    public static boolean continueOrGetMoney() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Продолжить игру - 1\tЗабрать деньги - 0");
+        int userChoice = -1;
+        while (userChoice != 0 && userChoice != 1) {
+            if (!scanner.hasNextInt()) {
+                System.out.print("Некорректный ввод (⊙_⊙)？\nПопробуйте снова: ");
+                scanner.next();
+            }
+            else {
+                userChoice = scanner.nextInt();
+                if (userChoice == 1) {
+                    System.out.println("Отлично, продолжаем!");
+                    return true;
+                } else if (userChoice == 0) {
+                    System.out.println("Вот ваши деньги. До свидания");
+                    return false;
+                }
+                else {
+                    System.out.print("Некорректный ввод (⊙_⊙)？\nПопробуйте снова: ");
+                    userChoice = -1;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkAnswer(Question question, int answerValue, int i) {
+        if (question.getAnswers().get(answerValue).isRight()) {
+            System.out.println("Правильный ответ! Вы заработали " + question.getPrice() + " рублей");
+            if (i != 4) {
+                if (!continueOrGetMoney())
+                    return false;
+                else
+                    return true;
+            }
+            else {
+                System.out.println("Вы выиграли! Поздравляю ヾ(≧▽≦*)o");
+                return false;
+            }
+        }
+        else {
+            System.out.println("Неверный ответ! Вы потеряли весь выигрыш (⓿_⓿)");
+            return false;
+        }
+    }
 }
