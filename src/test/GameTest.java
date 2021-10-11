@@ -70,4 +70,23 @@ class GameTest {
         assertFalse(Game.checkAnswer(Game.getQuestions().get(4), 3, 4));
         Game.getQuestions().clear();
     }
+
+
+    @Test
+    public void getUserAnswerInvalidInputTest() {
+        InputStream inputStream = System.in;
+        ByteArrayInputStream in = new ByteArrayInputStream("9\na\n3".getBytes());
+        System.setIn(in);
+        assertEquals(3, Game.getUserAnswer());
+        System.setIn(inputStream);
+    }
+
+    @Test
+    public void continueOrGetMoneyInvalidInputTest() {
+        InputStream inputStream = System.in;
+        ByteArrayInputStream in = new ByteArrayInputStream("5\na\n-\n1".getBytes());
+        System.setIn(in);
+        assertTrue(Game.continueOrGetMoney());
+        System.setIn(inputStream);
+    }
 }
